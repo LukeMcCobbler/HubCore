@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubCore", "HubCore\HubCore.csproj", "{2EAEF9DC-6E79-4287-B97F-5BA28454AFD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EAEF9DC-6E79-4287-B97F-5BA28454AFD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EAEF9DC-6E79-4287-B97F-5BA28454AFD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EAEF9DC-6E79-4287-B97F-5BA28454AFD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EAEF9DC-6E79-4287-B97F-5BA28454AFD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D43A6909-FF27-4989-BA19-EBAD48CF3F0E}
+	EndGlobalSection
+EndGlobal
