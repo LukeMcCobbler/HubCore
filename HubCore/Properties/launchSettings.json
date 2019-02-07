@@ -1,7 +1,11 @@
-﻿{
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/HubCore",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:23899",
       "sslPort": 0
@@ -18,9 +22,15 @@
     "HubCore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000"
+    },
+    "IIS": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT ": "Development"
       }
     }
   }
