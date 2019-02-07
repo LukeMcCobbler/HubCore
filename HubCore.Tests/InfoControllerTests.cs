@@ -18,19 +18,6 @@ namespace Tests
         {
         }
         [Test]
-        public void InfoController_GetInfo_ThrowsExceptionWhenInfoContextHasInvalidQueryLogicType()
-        {
-            //Arrange
-            var stubRepository = Substitute.For<IInfoRepository>();
-            stubRepository.GetInfoContext(Arg.Any<string>()).Returns(new InfoContext() { QueryLogicType = QueryLogicType.DBQuery });
-            var stubQueryLogicProviders = new Dictionary<QueryLogicType, IQueryLogicResolver>() { { QueryLogicType.REST, Substitute.For<IQueryLogicResolver>() } };
-            var target = new InfoController(stubRepository, stubQueryLogicProviders);
-            //Act
-            TestDelegate result = () => target.GetInfo("someTestInfo");
-            //Assert
-            Assert.That(result, Throws.Exception.With.Property("Message").EqualTo("Cannot find a way to resolve DBQuery") );
-        }
-        [Test]
         public void InfoController_GetInfo_UsesCorrectQueryLogicProvider()
         {
             //Arrange
@@ -38,7 +25,8 @@ namespace Tests
             stubRepository.GetInfoContext(Arg.Any<string>()).Returns(new InfoContext() { QueryLogicType = QueryLogicType.REST, QueryLogic = "someUri" });
             var stubQueryLogicProvider = Substitute.For<IQueryLogicResolver>();
             stubQueryLogicProvider.PerformQuery("someUri", Arg.Any<string[]>()).Returns("aSampleResult");
-            var stubQueryLogicProviders = new Dictionary<QueryLogicType, IQueryLogicResolver>() { { QueryLogicType.REST,stubQueryLogicProvider  } };
+            var stubQueryLogicProviders = Substitute.For<IQueryLogicResolverFactory>();
+            stubQueryLogicProviders.getQueryLogicResolver(QueryLogicType.REST).Returns(stubQueryLogicProvider);
             var target = new InfoController(stubRepository, stubQueryLogicProviders);
             //Act
             var result = target.GetInfo("someTestInfo");
@@ -48,19 +36,25 @@ namespace Tests
             Assert.That(okResult.Value, Has.Property("Content").EqualTo("aSampleResult"));
 
         }
+        [TestCase("a,b,c")]
+        [TestCase("d,e")]
+        [TestCase("f")]
+        [TestCase("g,h,i,j,k,l")]
         [Test]
-        public void InfoController_GetInfo_UsesParameters()
+        public void InfoController_GetInfo_UsesParameters(string commaSeparatedParams)
         {
             //Arrange
             var stubRepository = Substitute.For<IInfoRepository>();
             stubRepository.GetInfoContext(Arg.Any<string>()).Returns(new InfoContext() { QueryLogicType = QueryLogicType.REST, QueryLogic = "someUri" });
             var mockQueryLogicProvider = Substitute.For<IQueryLogicResolver>();            
-            var mockQueryLogicProviders = new Dictionary<QueryLogicType, IQueryLogicResolver>() { { QueryLogicType.REST, mockQueryLogicProvider } };            
+            var mockQueryLogicProviders = Substitute.For<IQueryLogicResolverFactory>();
+            mockQueryLogicProviders.getQueryLogicResolver(QueryLogicType.REST).Returns(mockQueryLogicProvider);
             var target = new InfoController(stubRepository, mockQueryLogicProviders);
+            var paramArray=commaSeparatedParams.Split(',');
             //Act
-            var result = target.GetInfo("someTestInfo", "a", "b", "c");
+            var result = target.GetInfo("someTestInfo", paramArray);
             //Assert
-            mockQueryLogicProvider.Received().PerformQuery(Arg.Any<string>(), Arg.Is<string[]>(prms => string.Join(",", prms) == "a,b,c"));
-        }
+            mockQueryLogicProvider.Received().PerformQuery(Arg.Any<string>(), Arg.Is<string[]>(prms => string.Join(",", prms) == commaSeparatedParams));
+        } 
     }
 }
