@@ -14,18 +14,26 @@ namespace HubCore.Controllers
     {
         private IInfoRepository _infoRepository;
         private IQueryLogicResolverFactory _queryLogicResolverFactory;
+        private ILogger _logger;
         [Route("GetInfo/{infoTypeName}/{*infoParameters}")]
-        public IActionResult GetInfo(string infoTypeName, params string[] infoParameters)
+        public IActionResult GetInfo(string infoTypeName, string infoParameters)
         {
-            var infoContext = _infoRepository.GetInfoContext(infoTypeName);
-            var queryLogicResolver = _queryLogicResolverFactory.getQueryLogicResolver(infoContext.QueryLogicType);
-            var result = queryLogicResolver.PerformQuery(infoContext.QueryLogic, infoParameters);
-            return Ok(new HubInfoResult { Content = result, HasError = false, Error = null });
+            var retval = _logger.LogRequest(
+                () =>
+                {
+                    var infoContext = _infoRepository.GetInfoContext(infoTypeName);
+                    var queryLogicResolver = _queryLogicResolverFactory.getQueryLogicResolver(infoContext.QueryLogicType);
+                    var infoParameterArray = (infoParameters ?? "").Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    var result = queryLogicResolver.PerformQuery(infoContext.QueryLogic, infoParameterArray);
+                    return result;
+                }, infoTypeName, new { getInfoParameters = infoParameters });
+            return Ok(retval);
         }
-        public InfoController(IInfoRepository infoRepository, IQueryLogicResolverFactory queryLogicResolverFactory)
+        public InfoController(IInfoRepository infoRepository, IQueryLogicResolverFactory queryLogicResolverFactory, ILogger logger)
         {
             _infoRepository = infoRepository;
             _queryLogicResolverFactory = queryLogicResolverFactory;
+            _logger = logger;
         }
 
     }

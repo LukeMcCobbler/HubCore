@@ -1,7 +1,9 @@
-﻿namespace HubCore.Infrastructure
+﻿using Newtonsoft.Json.Linq;
+
+namespace HubCore.Infrastructure
 {
     public interface IQueryLogicResolver
     {
-        string PerformQuery(string QueryLogic,string[] InfoParameters);
+        JToken PerformQuery(string QueryLogic,string[] InfoParameters);
     }
 }
