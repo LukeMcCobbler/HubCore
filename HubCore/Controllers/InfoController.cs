@@ -22,10 +22,17 @@ namespace HubCore.Controllers
                 () =>
                 {
                     var infoContext = _infoRepository.GetInfoContext(infoTypeName);
-                    var queryLogicResolver = _queryLogicResolverFactory.getQueryLogicResolver(infoContext.QueryLogicType);
-                    var infoParameterArray = (infoParameters ?? "").Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    var result = queryLogicResolver.PerformQuery(infoContext.QueryLogic, infoParameterArray);
-                    return result;
+                    if (infoContext != null)
+                    {
+                        var queryLogicResolver = _queryLogicResolverFactory.getQueryLogicResolver(infoContext.QueryLogicType);
+                        var infoParameterArray = (infoParameters ?? "").Split('/', StringSplitOptions.RemoveEmptyEntries);
+                        var result = queryLogicResolver.PerformQuery(infoContext.QueryLogic, infoParameterArray);
+                        return result;
+                    }
+                    else
+                    {
+                        throw new HubOperationException($"Could not locate information provider for {infoTypeName}");
+                    }
                 }, infoTypeName, new { getInfoParameters = infoParameters });
             return Ok(retval);
         }

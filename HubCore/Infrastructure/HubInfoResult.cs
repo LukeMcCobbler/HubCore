@@ -4,7 +4,7 @@
     {
         public string Content { get; set; }
         public bool HasError { get; set; }
-        public HubException Error { get; set; }
+        public HubOperationException Error { get; set; }
         public LogId[] LogIds { get; set; }
     }
 }

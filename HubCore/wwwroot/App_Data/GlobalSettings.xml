@@ -1,0 +1,10 @@
+<SETTINGS>
+  <APPLICATION Name="HubCore">
+    <SECTION Name="QueryNames">
+      <KEY Name="GetAllInfoContext" Value="GET_InfoProviders_Global" />
+    </SECTION>
+    <SECTION Name="ConnectionStrings">
+      <KEY Name="HubParameterDB" Value="MSSQL_User ID=sa;Password=s4m43l;Initial Catalog=HubCoreConfiguration;Data Source=SEPTIMUS64\SQLEXPRESS;" />
+    </SECTION>
+  </APPLICATION>
+</SETTINGS>

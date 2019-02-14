@@ -1,6 +1,6 @@
 ﻿namespace HubCore.Infrastructure
 {
-    public class HubException
+    public class QueryParameter
     {
     }
 }

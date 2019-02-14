@@ -13,13 +13,6 @@ namespace Tests
 {
     public class InfoControllerTests
     {
-        public class passThroughLogger : ILogger
-        {
-            public JToken LogRequest<TParameterSummary>(Func<JToken> RequestDelegate, string infoTypeName, TParameterSummary parameterSummary)
-            {
-                return RequestDelegate();
-            }
-        }
         [SetUp]
         public void Setup()
         {
@@ -28,7 +21,8 @@ namespace Tests
         public void InfoController_GetInfo_UsesCorrectQueryLogicProvider()
         {
             //Arrange
-            var stubLogger = new passThroughLogger();            
+            var stubLogger = Substitute.For<ILogger>();
+            stubLogger.LogRequest(Arg.Any<Func<JToken>>(), Arg.Any<string>(), Arg.Any<object>()).Returns((callInfo) => callInfo.ArgAt<Func<JToken>>(0)());
             var stubRepository = Substitute.For<IInfoRepository>();
             stubRepository.GetInfoContext(Arg.Any<string>()).Returns(new InfoContext() { QueryLogicType = QueryLogicType.REST, QueryLogic = "someUri" });
             var stubQueryLogicProvider = Substitute.For<IQueryLogicResolver>();
@@ -42,7 +36,6 @@ namespace Tests
             //Assert
             Assert.IsNotNull(okResult);
             Assert.That(okResult.Value.ToString(), Is.EqualTo("aSampleResult"));
-
         }
         [TestCase("a/b/c", "a,b,c")]
         [TestCase("d/e", "d,e")]
@@ -54,7 +47,9 @@ namespace Tests
         public void InfoController_GetInfo_UsesParameters(string paramUrlSegments, string commaSeparatedParams)
         {
             //Arrange
-            var stubLogger = new passThroughLogger();
+            var stubLogger = Substitute.For<ILogger>();
+            stubLogger.LogRequest(Arg.Any<Func<JToken>>(), Arg.Any<string>(), Arg.Any<object>()).Returns((callInfo) => callInfo.ArgAt<Func<JToken>>(0)());
+
             var stubRepository = Substitute.For<IInfoRepository>();
             stubRepository.GetInfoContext(Arg.Any<string>()).Returns(new InfoContext() { QueryLogicType = QueryLogicType.REST, QueryLogic = "someUri" });
             var mockQueryLogicProvider = Substitute.For<IQueryLogicResolver>();
@@ -85,7 +80,7 @@ namespace Tests
             //Act
             var result = target.GetInfo("someTestInfo", null);
             //Assert
-            mockLogger.Received().LogRequest(Arg.Any<Func<JToken>>(), "sometestInfo", Arg.Is<object>(prm => true));
+            mockLogger.Received().LogRequest(Arg.Any<Func<JToken>>(), "someTestInfo", Arg.Is<object>(prm => true));
         }
     }
 }
